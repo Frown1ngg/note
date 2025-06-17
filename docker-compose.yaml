@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+
+  db_notes:
+
+    container_name: db_notes
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+
+    image: mongo:5.0.25
+    
+    command: mongod --port ${MONGO_INITDB_PORT}
+
+    ports:
+    volumes:
+       - db_notes_vol:/data/db
+
+    networks:
+      - server_net
+
+    
+# Конфигурация для хранилища данных
+volumes:
+  db_notes_vol: {}
+
+# Настройки сетей
+networks:
+  server_net:
+    driver: bridge
+  
