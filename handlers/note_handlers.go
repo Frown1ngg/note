@@ -41,7 +41,41 @@ func DeleteNoteHandler(ctx *gin.Context) {
 }
 
 func UpdateNoteHandler(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, "UpdateNoteHandler")
+	//ctx.JSON(http.StatusOK, "UpdateNoteHandler")
+	authorId := 1
+	id := ctx.Param("id")
+
+	var note models.Note
+	if err := ctx.ShouldBindJSON(&note); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": "Неверные данные"})
+		return
+	}
+
+	collection := database.MongoClient.Database("admin").Collection(fmt.Sprintf("notes/%d", authorId))
+	updateFields := bson.M{}
+	if note.Name != nil {
+		updateFields["name"] = note.Name
+	}
+	if note.Content != nil {
+		updateFields["content"] = note.Content
+	}
+
+	update := bson.M{"$set": updateFields}
+
+	filter := bson.M{"id": id}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if result.MatchedCount == 0 {
+		ctx.JSON(http.StatusOK, "Заметка не найдена")
+	} else {
+		ctx.JSON(http.StatusOK, "Заметка успешно обновлена")
+	}
 }
 
 func CreateNoteHandler(ctx *gin.Context) {
