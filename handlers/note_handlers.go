@@ -34,7 +34,7 @@ func DeleteNoteHandler(ctx *gin.Context) {
 
 	}
 	if result.DeletedCount == 0 {
-		ctx.JSON(http.StatusOK, "Заметка не найдена")
+		ctx.JSON(http.StatusNotFound, "Заметка не найдена")
 	} else {
 		ctx.JSON(http.StatusNotFound, "Заметка успешно удалена")
 	}
@@ -72,7 +72,7 @@ func UpdateNoteHandler(ctx *gin.Context) {
 	}
 
 	if result.MatchedCount == 0 {
-		ctx.JSON(http.StatusOK, "Заметка не найдена")
+		ctx.JSON(http.StatusNotFound, "Заметка не найдена")
 	} else {
 		ctx.JSON(http.StatusOK, "Заметка успешно обновлена")
 	}
