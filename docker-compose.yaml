@@ -15,9 +15,22 @@ services:
     command: mongod --port ${MONGO_INITDB_PORT}
 
     ports:
+      - ${MONGO_INITDB_PORT}:${MONGO_INITDB_PORT}
     volumes:
        - db_notes_vol:/data/db
 
+    networks:
+      - server_net
+  redis_notes:
+    container_name:  redis_notes
+
+    image: redis:7.2.4
+
+    command: --port ${REDIS_PORT}
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    volumes:
+      - redis-data:/data
     networks:
       - server_net
 
@@ -25,6 +38,7 @@ services:
 # Конфигурация для хранилища данных
 volumes:
   db_notes_vol: {}
+  redis-data: {}
 
 # Настройки сетей
 networks:
